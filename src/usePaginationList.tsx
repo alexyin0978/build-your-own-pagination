@@ -19,14 +19,13 @@ export const usePaginationList = (params: GenPaginationListParams) => {
     // if totalPageCount is more than this count
     // we will have to hide some pages and show Dots instead
     const currentPageLength = 1;
-    const leftDotsLength = 1;
-    const rightDotsLength = 1;
+    const breakLabelPlaceholderLength = 2;
     const maxLengthOfPageNumbersToShow =
       2 * boundaryCount +
       2 * siblingCount +
       currentPageLength +
-      leftDotsLength +
-      rightDotsLength;
+      (breakLabelPlaceholderLength - 1) + // left
+      (breakLabelPlaceholderLength - 1); // right
 
     // CASE 1: show all page numbers
     if (totalPageCount <= maxLengthOfPageNumbersToShow) {
@@ -37,19 +36,19 @@ export const usePaginationList = (params: GenPaginationListParams) => {
     const rightExtremeBoundary = lastPage - (boundaryCount - 1);
     const leftExtremeSibling = Math.max(firstPage, currentPage - siblingCount);
     const rightExtremeSibling = Math.min(lastPage, currentPage + siblingCount);
-    const extraBufferLength = 1;
 
     const shouldShowLeftDots =
-      leftExtremeBoundary + leftDotsLength + extraBufferLength <
-      leftExtremeSibling;
+      leftExtremeBoundary + breakLabelPlaceholderLength < leftExtremeSibling;
     const shouldShowRightDots =
-      rightExtremeSibling + rightDotsLength + extraBufferLength <
-      rightExtremeBoundary;
+      rightExtremeSibling + breakLabelPlaceholderLength < rightExtremeBoundary;
 
     // CASE 2: show right Dots
     if (!shouldShowLeftDots && shouldShowRightDots) {
       const leftPagesLength =
-        boundaryCount + siblingCount * 2 + currentPageLength + leftDotsLength;
+        boundaryCount +
+        siblingCount * 2 +
+        currentPageLength +
+        (breakLabelPlaceholderLength - 1);
       const leftPages = genArrayOfNumbers(firstPage, leftPagesLength);
       const rightBoundaryPages = genArrayOfNumbers(
         lastPage - boundaryCount + 1,
@@ -66,7 +65,7 @@ export const usePaginationList = (params: GenPaginationListParams) => {
         lastPage -
         siblingCount * 2 -
         (boundaryCount - 1) -
-        rightDotsLength -
+        (breakLabelPlaceholderLength - 1) -
         currentPageLength;
       const rightPages = genArrayOfNumbers(rightPagesStart, lastPage);
 
