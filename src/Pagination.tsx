@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import {
   MdFirstPage,
   MdLastPage,
@@ -7,6 +7,7 @@ import {
 } from "react-icons/md";
 import { usePaginationList } from "./usePaginationList";
 import { Fragment } from "react";
+import PageButton from "./PageButton";
 
 type PaginationProps = {
   totalPageCount: number;
@@ -65,38 +66,45 @@ const Pagination = (props: PaginationProps) => {
   return (
     <Flex alignItems={"center"} gap={2}>
       {showFirstButton && (
-        <Box onClick={onNavigateToFirstPage} cursor={"pointer"}>
-          <MdFirstPage size={20} />
-        </Box>
+        <PageButton
+          content={<MdFirstPage size={20} />}
+          onClick={onNavigateToFirstPage}
+          isDisabled={currentPage === firstPage}
+        />
       )}
       {showPrevButton && (
-        <Box onClick={onNavigateToPreviousPage} cursor={"pointer"}>
-          <MdNavigateBefore size={20} />
-        </Box>
+        <PageButton
+          content={<MdNavigateBefore size={20} />}
+          isDisabled={currentPage === firstPage}
+          onClick={onNavigateToPreviousPage}
+        />
       )}
       {pageList &&
         pageList.map((item, idx) => {
           return typeof item === "number" ? (
-            <Box
+            <PageButton
               key={item}
+              content={item}
+              isActive={currentPage === item}
               onClick={() => onChange(item)}
-              color={currentPage === item ? "red" : "black"}
-            >
-              {item}
-            </Box>
+            />
           ) : (
             <Fragment key={`${idx} + breakLabel`}>{item}</Fragment>
           );
         })}
       {showNextButton && (
-        <Box onClick={onNavigateToNextPage} cursor={"pointer"}>
-          <MdNavigateNext size={20} />
-        </Box>
+        <PageButton
+          content={<MdNavigateNext size={20} />}
+          isDisabled={currentPage === lastPage}
+          onClick={onNavigateToNextPage}
+        />
       )}
       {showLastButton && (
-        <Box onClick={onNavigateToLastPage} cursor={"pointer"}>
-          <MdLastPage size={20} />
-        </Box>
+        <PageButton
+          content={<MdLastPage size={20} />}
+          isDisabled={currentPage === lastPage}
+          onClick={onNavigateToLastPage}
+        />
       )}
     </Flex>
   );

@@ -17,14 +17,16 @@ export const usePaginationList = (params: GenPaginationListParams) => {
     const lastPage = totalPageCount;
 
     // if totalPageCount is more than this count
-    // we will have to hide some pages and show break label instead
+    // we will have to hide some pages and show Dots instead
     const currentPageLength = 1;
-    const extraBufferLength = 1;
+    const leftDotsLength = 1;
+    const rightDotsLength = 1;
     const maxLengthOfPageNumbersToShow =
       2 * boundaryCount +
       2 * siblingCount +
       currentPageLength +
-      extraBufferLength;
+      leftDotsLength +
+      rightDotsLength;
 
     // CASE 1: show all page numbers
     if (totalPageCount <= maxLengthOfPageNumbersToShow) {
@@ -32,52 +34,50 @@ export const usePaginationList = (params: GenPaginationListParams) => {
     }
 
     const leftExtremeBoundary = boundaryCount;
-    const rightExtremeBoundary = lastPage - boundaryCount + 1;
-    const leftExtremeSibling = Math.max(
-      currentPage,
-      currentPage - siblingCount
-    );
-    const rightExtremeSibling = Math.min(
-      currentPage,
-      currentPage + siblingCount
-    );
+    const rightExtremeBoundary = lastPage - (boundaryCount - 1);
+    const leftExtremeSibling = Math.max(firstPage, currentPage - siblingCount);
+    const rightExtremeSibling = Math.min(lastPage, currentPage + siblingCount);
+    const extraBufferLength = 1;
 
-    const shouldShowLeftBreakLabel: boolean =
-      leftExtremeBoundary + extraBufferLength < leftExtremeSibling;
-    const shouldShowRightBreakLabel: boolean =
-      rightExtremeSibling + extraBufferLength < rightExtremeBoundary;
+    const shouldShowLeftDots =
+      leftExtremeBoundary + leftDotsLength + extraBufferLength <
+      leftExtremeSibling;
+    const shouldShowRightDots =
+      rightExtremeSibling + rightDotsLength + extraBufferLength <
+      rightExtremeBoundary;
 
-    // CASE 2: show right break label
-    if (!shouldShowLeftBreakLabel && shouldShowRightBreakLabel) {
+    // CASE 2: show right Dots
+    if (!shouldShowLeftDots && shouldShowRightDots) {
       const leftPagesLength =
-        boundaryCount +
-        siblingCount * 2 +
-        currentPageLength +
-        extraBufferLength;
+        boundaryCount + siblingCount * 2 + currentPageLength + leftDotsLength;
       const leftPages = genArrayOfNumbers(firstPage, leftPagesLength);
       const rightBoundaryPages = genArrayOfNumbers(
         lastPage - boundaryCount + 1,
         lastPage
       );
 
-      return [...leftPages, BreakLabel(), ...rightBoundaryPages];
+      return [...leftPages, <BreakLabel />, ...rightBoundaryPages];
     }
 
-    // CASE 3: show left break label
-    if (shouldShowLeftBreakLabel && !shouldShowRightBreakLabel) {
+    // CASE 3: show left Dots
+    if (shouldShowLeftDots && !shouldShowRightDots) {
       const leftBoundaryPages = genArrayOfNumbers(firstPage, boundaryCount);
       const rightPagesStart =
-        lastPage - siblingCount * 2 - boundaryCount + 1 - extraBufferLength;
+        lastPage -
+        siblingCount * 2 -
+        (boundaryCount - 1) -
+        rightDotsLength -
+        currentPageLength;
       const rightPages = genArrayOfNumbers(rightPagesStart, lastPage);
 
-      return [...leftBoundaryPages, BreakLabel(), ...rightPages];
+      return [...leftBoundaryPages, <BreakLabel />, ...rightPages];
     }
 
-    // CASE 4: show break labels on both side
-    if (shouldShowLeftBreakLabel && shouldShowRightBreakLabel) {
+    // CASE 4: show Dots on both side
+    if (shouldShowLeftDots && shouldShowRightDots) {
       const leftBoundaryPages = genArrayOfNumbers(firstPage, boundaryCount);
       const rightBoundaryPages = genArrayOfNumbers(
-        lastPage - boundaryCount + 1,
+        lastPage - (boundaryCount - 1),
         lastPage
       );
       const middlePages = genArrayOfNumbers(
@@ -86,9 +86,9 @@ export const usePaginationList = (params: GenPaginationListParams) => {
       );
       return [
         ...leftBoundaryPages,
-        BreakLabel(),
+        <BreakLabel />,
         ...middlePages,
-        BreakLabel(),
+        <BreakLabel />,
         ...rightBoundaryPages,
       ];
     }

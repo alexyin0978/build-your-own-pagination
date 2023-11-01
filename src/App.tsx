@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Pagination from "./Pagination";
-import { Box, Input } from "@chakra-ui/react";
+import { Box, Input, Stack, Text } from "@chakra-ui/react";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,21 +12,21 @@ function App() {
   const [totalPageCount, setTotalPageCount] = useState(8);
 
   return (
-    <>
-      enter totalPageCount here:
+    <Stack spacing={3}>
+      <Text>enter totalPageCount here:</Text>
       <Input
         value={totalPageCount}
         onChange={(e) => setTotalPageCount(Number(e.target.value))}
-        // type="number"
+        type="number"
         w={"150px"}
       />
       <Box>currentPage is : {currentPage}</Box>
       <Pagination
-        totalPageCount={totalPageCount}
+        totalPageCount={10}
         currentPage={currentPage}
         onChange={onPageChange}
       />
-    </>
+    </Stack>
   );
 }
 
