@@ -9,7 +9,7 @@ function App() {
     setCurrentPage(nextPage);
   };
 
-  const [totalPageCount, setTotalPageCount] = useState(8);
+  const [totalPageCount, setTotalPageCount] = useState(7);
 
   return (
     <Stack spacing={3}>
@@ -22,7 +22,7 @@ function App() {
       />
       <Box>currentPage is : {currentPage}</Box>
       <Pagination
-        totalPageCount={10}
+        totalPageCount={totalPageCount}
         currentPage={currentPage}
         onChange={onPageChange}
       />
